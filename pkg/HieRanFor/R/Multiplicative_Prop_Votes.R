@@ -1,6 +1,23 @@
+#' For each case, the multiplicative proportion of votes
+#' 
+#' This function takes as input the proporton of votes that each case received 
+#' in each local classifer (See: Extract_Votes) and returns the multiplication
+#' of votes, along each path down the class hierarchy. The function prints an
+#' error message for cases whose sum over all terminal nodes is different from 1
+#' (upto 10 digits accuracy).
+#' 
+#' @author Yoni Gavish <gavishyoni@@gmail.com>
+#'   
+#'@param Prop_Vote      Data frame, the proportion of votes that each case received in each local classifer. 
 
 
 
+
+
+
+# returns for each case the multiplicative proportion of votes down the hierarchical tree. Can also be used
+# to return the multiplicative proportion of votes up to a certain level of the hierarhcy
+# requires as input the proportion of votes that each case received in each local classifer -the output of Extract_Votes
 Multiplicative_Prop_Votes = function(Prop_Vote,     # data frame, the proportion of votes that each case received for each node in each local classifier,One of the output data frames of Extract_Votes
                              Unique_Path,   # data frame, the Unique_Path data frame from Run_HRF
                              All_Levels = FALSE, # logical, if TRUE, a data frame with the predicted probabilities is returned for each level, if FALSE, only for the deepest level.

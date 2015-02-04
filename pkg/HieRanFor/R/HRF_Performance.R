@@ -1,9 +1,36 @@
+#' Mutltiple flat and hierarchical performance measures for crisp classifcation.
+#' 
+#' @author Yoni Gavish <gavishyoni@@gmail.com>
+#' 
+#' @param Hie_RF            Object of class Hier.Random.Forest - the output of
+#'   Run_HRF.
+#' @param Per_Index         The performance and accuracy indices to compute.See
+#'   details below.
+#' @param Crisp_Rule        The method of translating proportion of votes to a
+#'   crisp category. See details below.
+#' @param Perm_Num          Integer,number of random permutations for each case
+#'   if 'Multiplicative_Permutation' is applied.
+#' @param By_Node           Logical, if TRUE performances indices will be
+#'   estimated for each terminal node as well as for the overall confusion
+#'   matrix.
+#' @param Div_Logical       Logical, if TRUE progress when
+#'   'Multiplicative_Permutation' is applied will be printed every Div_Print
+#'   permutations
+#' @param Div_Print         Ser above
+#' @param Beta_H_F          Numeric in the range Beta_H_F>=0. Controls weights
+#'   in the hierarchical F measure index. See Hie_F_Measure for details.
+#' @param ...               Optional parameters to be passed to the low level
+#'   functions.
+#'   
+
+
+
 
 # function, returns mutltiple flat and hierarchical performance measures for a crisp classifcation. Crispt classifcation may be based on multiplicative majority, stepwise majority or multiplicative permutations 
 
 
-HRF_Performance = function(Hie_RF,                                         # object of class Hier.Random.Forest - the output of Run_HRF
-                           Per_Index = c("Flat_Measures","Hie_F_Measure"),      # the accurcary index to use. 
+HRF_Performance = function(Hie_RF,                                         
+                           Per_Index = c("Flat_Measures","Hie_F_Measure"),      
                            Crisp_Rule  = c("Multiplicative_Majority","Multiplicative_Permutation","Setpwise_Majority"), # Wether the multiplicative majority rule shoudl be used to convert proportion of votes to classifed node or wether permutation based accuracy  should be estimated.
                            Perm_Num = 500,                                 # Integer, number of random votes to take for each case
                            By_Node = TRUE,                                 # logical, indicating whether several indices for each node should be returned, if TRUE, the indices will appear in Hie_Performance after the overall performance measures 

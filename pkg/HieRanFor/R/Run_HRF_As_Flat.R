@@ -1,4 +1,4 @@
-
+#' Run the same training data as flat randomForest classifcation
 
 # function, takes as input an object of class Hier.Random.Forest and runs a flat randomforest.By default, use the same rnadomForest parameters as each local classifer in Hie_RF
 

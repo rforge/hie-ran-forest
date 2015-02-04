@@ -1,4 +1,7 @@
-
+#' Plot the Hierarchical class structure
+#' 
+#' 
+#' 
 
 Plot_Hie_Tree = function(Nodes_Info,                       # Data frame, containing the Node_Info data from Ide_Hie_Str or from Run_HRF
                          Unique_Path,                      # Data frame, containing the Unique_Path data from Ide_Hie_Str or from Run_HRF

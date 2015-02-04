@@ -1,3 +1,9 @@
+#' Ploting function for the hierarchical importance
+#' 
+#' 
+
+
+
 
 # takes as input the list generated  by Hie_Importance
 # usaes the four column format list with classifer name, parent name, variable name and importance as the four columns

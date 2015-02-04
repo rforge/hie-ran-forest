@@ -1,10 +1,51 @@
+#' Runs a flat classifcation on the same data as Hie_RF and asses performance.
+#' 
+#' 
+#' 
+#' @author Yoni Gavish <gavishyoni@@gmail.com>
+#' 
+#' @param Hie_RF             Object of class Hier.Random.Forest - the output of 
+#'   Run_HRF.
+#' @param mtry               Number of variables randomly sampled as candidates 
+#'   at each split. Default is to use the same method used in Hie_RF
+#' @param ntree              Number of trees to grow in the flat classifier.See 
+#'   ?randomForest for additional details, Default is the same ntree used in 
+#'   each local classifer of Hie_RF.
+#' @param importance         Logical, if TRUE importance of variables will be 
+#'   assesed. See ?randomForest for additional details.Default is the same as 
+#'   Hie_RF.
+#' @param proximity          Logical, If TRUE, proximity will be calcualted. See
+#'   ?randomForest for additional details. Default is the same as Hie_RF.
+#' @param keep.forest        Logical, if TRUE (recommended) the forest will be 
+#'   retained. Default is the same as Hie_RF.
+#' @param keep.inbag         Logical, if TRUE an n by ntree matrix be returned 
+#'   that keeps track of which samples are "in-bag” in which trees. n being the 
+#'   number of cases in the training set. Required for the permutation-based 
+#'   performance assesments. Default is the same as Hie_RF.
+#' @param Per_Index          The performance and accuracy indices to compute.
+#'   See details in HRF_Performance.
+#' @param Crisp_Rule         The method of translating proportion of votes to a 
+#'   crisp category. See details in HRF_Performance.
+#' @param Perm_Num           Integer, number of random permutations for each
+#'   case if 'Multiplicative_Permutation' is applied. See details in
+#'   HRF_Performance.
+#' @param By_Node            Logical, if TRUE, performance measures are 
+#'   estimated for each terminal node as well.
+#' @param Div_Logical        Logical, if TRUE progress when 
+#'   'Multiplicative_Permutation' is applied will be printed every Div_Print 
+#'   permutations
+#' @param Beta_H_F           Numeric in the range Beta_H_F>=0. Controls weights 
+#'   in the hierarchical F measure index. See Hie_F_Measure for details.
+#' @param ...                Optional parameters to be passed to the low level 
+#'   functions
+#'   
+#'   
 
 
-# function, takes as input an object of class Hier.Random.Forest, runs a flat classsification and estimate performance 
 
-Flat_RF_Performance = function(Hie_RF,                                   # object of class Hier.Random.Forest - the output of Run_HRF
-                               mtry         = Hie_RF$call$mtry,          # integer, Number of variables randomly sampled as candidates at each split. Note that the default is to use tuneRF function of randomForest for each local classifier
-                               ntree        = Hie_RF$call$ntree,         # number of trees to grow in each local classifier
+Flat_RF_Performance = function(Hie_RF,                                   
+                               mtry         = Hie_RF$call$mtry,          
+                               ntree        = Hie_RF$call$ntree,         
                                importance   = Hie_RF$call$importance,    # Should importance of predictors be assessed?
                                proximity    = Hie_RF$call$proximity,     # should the proximity be calcualted? 
                                keep.forest  = Hie_RF$call$keep.forest,   
@@ -21,10 +62,10 @@ Flat_RF_Performance = function(Hie_RF,                                   # objec
   
 
   # required packages
-  require(randomForest)
-  require(e1071)
-  require(caret)
-  require(reshape)
+  # require(randomForest)
+  # require(e1071)
+  # require(caret)
+  # require(reshape)
   
   ######################################################################################
   ### STEP 1 - PERFORM CHECKS                                                        ###
@@ -257,12 +298,9 @@ Flat_RF_Performance = function(Hie_RF,                                   # objec
   
   
   ######   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ######
-  ####                                                                   ####
-  ##                                                                       ##
   #    Add here addtional Hie_Perf data frames if new methods are added     #
-  ##                                                                       ##
-  ####                                                                   ####         
   ######   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ######
+  
   
   cat(paste("\n","-->  Crisp_Rule by Per_Index data frames created","\n",sep=""))
   cat("######################")
@@ -332,7 +370,7 @@ Flat_RF_Performance = function(Hie_RF,                                   # objec
   
   
   ######################################################################################
-  ### STEP 6 - ESTIMATING ACCURACY FOR EACH ROW IN Hie_Performance                           ###
+  ### STEP 6 - ESTIMATING ACCURACY FOR EACH ROW IN Hie_Performance                   ###
   ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
   cat("######################")
   cat(paste("\n","-->  Start estimating performance measures ","\n",sep=""))
@@ -360,9 +398,9 @@ Flat_RF_Performance = function(Hie_RF,                                   # objec
     rm(Joined_levels) # remove 
     
     # Use the confusionmatrix function caret package to get the confusion matrix
-    Conf_Matr <- confusionMatrix(data=Pred_Nodes,
-                                 reference= Obse_Nodes,
-                                 dnn = c("Prediction", "Observed"))
+    Conf_Matr <- caret::confusionMatrix(data      = Pred_Nodes,
+                                        reference = Obse_Nodes,
+                                        dnn       = c("Prediction", "Observed"))
     
     Conf_Matr_Table <- Conf_Matr$table
     Conf_Matr_Overall <- as.data.frame(t(Conf_Matr$overall))
@@ -386,7 +424,7 @@ Flat_RF_Performance = function(Hie_RF,                                   # objec
     
     if(Flat_Measures_Logical && By_Node)
     {  # start if Flat and By_Node
-      Melt_ByClass <- melt(Conf_Matr_ByClass)
+      Melt_ByClass <- reshape::melt(Conf_Matr_ByClass)
       colnames(Melt_ByClass)       <- c("Term_Node","Index","Value")
       Melt_ByClass$Term_Node_Index <- paste(Melt_ByClass$Term_Node,
                                             Melt_ByClass$Index,
@@ -444,11 +482,11 @@ Flat_RF_Performance = function(Hie_RF,                                   # objec
       
       
       # Use the confusionmatrix function caret package to get the confusion matrix
-      Conf_Matr <- confusionMatrix(data=Pred_Nodes,
+      Conf_Matr <- caret::confusionMatrix(data=Pred_Nodes,
                                    reference= Obse_Nodes,
                                    dnn = c("Prediction", "Observed"))
       
-      Conf_Matr_Table <- Conf_Matr$table
+      Conf_Matr_Table   <- Conf_Matr$table
       Conf_Matr_Overall <- as.data.frame(t(Conf_Matr$overall))
       Conf_Matr_ByClass <- Conf_Matr$byClass
       
@@ -472,7 +510,7 @@ Flat_RF_Performance = function(Hie_RF,                                   # objec
       # insert results to Hie_Performance if Flat_Measures_Logical==TRUE for each node
       if(Flat_Measures_Logical && By_Node)
       {  # start if Flat By_Node
-        Melt_ByClass <- melt(Conf_Matr_ByClass)
+        Melt_ByClass <- reshape::melt(Conf_Matr_ByClass)
         colnames(Melt_ByClass)       <- c("Term_Node","Index","Value")
         Melt_ByClass$Term_Node_Index <- paste(Melt_ByClass$Term_Node,
                                               Melt_ByClass$Index,
@@ -491,7 +529,7 @@ Flat_RF_Performance = function(Hie_RF,                                   # objec
                                               Beta_H_F = Beta_H_F,
                                               By_Node=By_Node)
         
-        # Store wach result in the correct place in Hie_Performance
+        # Store each result in the correct place in Hie_Performance
         for(count_measure in 1: nrow(Results_Hie_F_Measure))
         { Col_Num_2 <- match(Results_Hie_F_Measure[count_measure,"Measure"],
                              colnames(Hie_Perf_Mult_Perm))

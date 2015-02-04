@@ -1,4 +1,6 @@
-
+#' the tuneRF function of randomForest after correcting for error relating to errorOld=0
+#' 
+#' 
 
 # function, tuneRF of randomForest, after correcting for error relating to errorOld=0
 
@@ -10,11 +12,11 @@ tuneRF_2=function (x, y, mtryStart = if (is.factor(y)) floor(sqrt(ncol(x))) else
     stop("improve must be non-negative.")
   classRF <- is.factor(y)
   errorOld <- if (classRF) {
-    randomForest(x, y, mtry = mtryStart, ntree = ntreeTry, 
+    randomForest::randomForest(x, y, mtry = mtryStart, ntree = ntreeTry, 
                  keep.forest = FALSE, ...)$err.rate[ntreeTry, 1]
   }
   else {
-    randomForest(x, y, mtry = mtryStart, ntree = ntreeTry, 
+    randomForest::randomForest(x, y, mtry = mtryStart, ntree = ntreeTry, 
                  keep.forest = FALSE, ...)$mse[ntreeTry]
   }
   if (errorOld < 0) 
@@ -44,12 +46,12 @@ tuneRF_2=function (x, y, mtryStart = if (is.factor(y)) floor(sqrt(ncol(x))) else
       if (mtryCur == mtryOld) 
         break
       errorCur <- if (classRF) {
-        randomForest(x, y, mtry = mtryCur, ntree = ntreeTry, 
+        randomForest::randomForest(x, y, mtry = mtryCur, ntree = ntreeTry, 
                      keep.forest = FALSE, ...)$err.rate[ntreeTry, 
                                                         "OOB"]
       }
       else {
-        randomForest(x, y, mtry = mtryCur, ntree = ntreeTry, 
+        randomForest::randomForest(x, y, mtry = mtryCur, ntree = ntreeTry, 
                      keep.forest = FALSE, ...)$mse[ntreeTry]
       }
       if (trace) {
@@ -58,8 +60,13 @@ tuneRF_2=function (x, y, mtryStart = if (is.factor(y)) floor(sqrt(ncol(x))) else
           else errorCur, "\n")
       }
       oobError[[as.character(mtryCur)]] <- errorCur
-      if(errorCur==0){Improve=improve}
+      #####
+      # this is the line I've added and edited. when errorOLd==o the original function returns NA  
+      # for errorCur/errorOld. 
+      if(errorCur==0){Improve <- improve}
       if(errorCur!=0){Improve <- 1 - errorCur/errorOld}
+      
+      ########
       cat(Improve, improve, "\n")
       if (Improve > improve) {
         errorOld <- errorCur
@@ -76,7 +83,7 @@ tuneRF_2=function (x, y, mtryStart = if (is.factor(y)) floor(sqrt(ncol(x))) else
     axis(1, at = res[, "mtry"])
   }
   if (doBest) 
-    res <- randomForest(x, y, mtry = res[which.min(res[, 
+    res <- randomForest::randomForest(x, y, mtry = res[which.min(res[, 
                                                        2]), 1], ...)
   res
 }

@@ -1,19 +1,132 @@
+#' Runs the hierarchical randomForest on the training data.
+#' 
+#' Tha main function of the package that identifies the hierarchial class 
+#' structure from the input training data and runs a randomForest as the local 
+#' classifier at each parent node. A local randomForest classifer is added for 
+#' each internal node that has more than one child node. Returns an object of 
+#' class Hier.Random.Forest that contains all the local randomForest objects
+#' along with additional information on the hierachical structure.
+#' 
+#' @author Yoni Gavish <gavishyoni@@gmail.com>
+#' 
+#' @param Train_Data         Data frame with the training data.
+#' @param Case_ID            A character or integer, specifying the name or
+#'   column number used as case IDs in \code{Train_Data}. Case ID values
+#'   must be unique.
+#' @param Hie_Levels         A vector of characters or integers, containing the
+#'   names or column numbers of the hierarchical levels in \code{Train_Data}. Order  of
+#'   columns in \code{Train_Data} should be from the tree root to the terminal nodes.
+#' @param Internal_End_Path  Logical, \code{TRUE} if all terminal nodes are in the
+#'   lowest level of the class hierarchy.
+#' @param End_Path_Name      Character - the name used in level i+1 for terminal
+#'   nodes ending in level i. The only factor in the class hierarchy that can
+#'   apear in more than one hierarchy level
+#' @param Root_Include       Logical, \code{TRUE} if \code{ROOT_NAME} is included in
+#'   \code{Hie_Levels}.
+#' @param Root_Name          Character - name to use for the tree root.
+#' @param Exp_Var            A vector of characters or integers, containing the
+#'   names or column numbers in \code{Train_Data} with the explanatory variables. 
+#'   Default takes all columns other than \code{Case_ID} and
+#'  \code{Hie_Levels}.
+#' @param mtry               Number of variables randomly sampled as candidates
+#'   at each split. Note that the default is to use \code{tuneRF} function of
+#'   \code{randomForest} package for each local classifier. Setting \code{mtry="tuneRF_2"} will use a
+#'   sligtly different version of \code{tuneRF}.
+#' @param ntree              Number of trees to grow in each local classifier.
+#'   See \code{?randomForest} for additional details.
+#' @param importance         Logical, if \code{TRUE} importance of variables will be
+#'   assesed and saved at each local classifer. See \code{?randomForest} for additional
+#'   details.
+#' @param proximity          Logical, if \code{TRUE}, proximity will be calcualted for
+#'   each local classifier. See \code{?randomForest} for additional details.
+#' @param keep.forest        Logical, if \code{TRUE} (recommended) the forest of each
+#'   local classifer will be retained. If \code{FALSE}, the predict and performance functions will return an error. 
+#' @param keep.inbag         Logical, if \code{TRUE} an \emph{n} by \code{ntree} matrix be returned
+#'   that keeps track of which cases are "in-bag” in which trees. \emph{n} being the
+#'   number of cases in the training set of a local classifer. Required for the
+#'   permutation-based performance assesments.
+#' @param ...                Optional parameters to be passed to the low level
+#'   functions.
+#' 
+#' @details  Implements Breiman's (2001) random forest algorithm based on the \code{\link{randomForest}} package for classification.
+#'   
+#'   
+#' @return  An object of class \code{"Hier.Random.Forest"} that constains the following: 
+#'   \item{Hier_Struc}{A list containing three data frames: 
+#'   \describe{
+#'   \item{\code{$LRF_Info} - information on each local randomForest, containing the following columns:}{}
+#'      {\tabular{lll}{
+#'       \code{"Classifer_ID"} \tab \tab The name of the local classifer. \cr
+#'       \code{"Par_Level"}    \tab \tab The name of the parent node in the local classifer. \cr
+#'       \code{"Par_Name"}     \tab \tab The name of the parent node in the local classifer. \cr
+#'       \code{"Par_Clas_ID"}  \tab \tab The name of the classifer in which the parent node was classfied.  \cr
+#'       \code{"Num_Sib_Tot"}  \tab \tab The number of sibling nodes in the local classifer.  \cr
+#'       \code{"Num_Sib_Ter"}  \tab \tab The number of terminal sibling nodes in the local classifer.  \cr
+#'       \code{"Num_Sib_Int"}  \tab \tab The number of internal sibling nodes in the local classifer.  \cr
+#'        }}
+#'   \item{\code{$Nodes_Info} - information on each internal or terminal node in the class hierarchy, containing the following columns:}{}
+#'       {\tabular{lll}{
+#'       \code{"Node_NamD"}        \tab \tab The name of the node. \cr
+#'       \code{"Node_Level"}       \tab \tab  The level of the node in the class hierarchy. \cr
+#'       \code{"Node_Freq"}        \tab \tab  The number of times the node appears in the training data. \cr
+#'       \code{"Node_Par_Lev"}     \tab \tab  The level in which the parent of the node resides. \cr
+#'       \code{"Node_Par_Name"}    \tab \tab The name of the node's parent node. \cr
+#'       \code{"Term_Int_node"}    \tab \tab If the node is terminal or internal. \cr
+#'       \code{"Clas_yes_no"}      \tab \tab If the node is the parent node in a local classifer. \cr
+#'       \code{"Classifier_ID"}    \tab \tab If the node is the parent node in a local classifer, the name of the local classifer. \cr
+#'       \code{"Classified_In"}    \tab \tab The name of the local classifer in which the node is classified. \cr
+#'       \code{"Lev_Above_Clas_In"}\tab \tab The number of levels above the node's level in which it is  classified. \cr
+#'        }}
+#'   \item{\code{$Unique_Path} - information on all the unique pathes from the tree root to each of the terminal nodes. 
+#'   Include two additional columns for \code{Root_Name} and \code{End_Path_Name}.}{}}}
+#'   
+#'   \item{Train_Data_Ready}{Data frame containing the  training data after 
+#'   restructuring to the usable format of \code{Run_HRF}} 
+#'   \item{Case_ID_2}{Column 
+#'   number in \code{Train_Data_Ready} containing the case IDs} 
+#'   \item{Path_Name_2}{Column number in Train_Data_Ready containing the path 
+#'   names} 
+#'   \item{Hie_Levels_2}{Column number in \code{Train_Data_Ready} containing the
+#'   hierarchical information} 
+#'   \item{Exp_Var_2}{Column number in \code{Train_Data_Ready} containing the explanatory variables.}
+#'   \item{All_Local_RF}{The main large list with all the information on 
+#'   each local classifer. For each local classifer, the function returns a list
+#'   consisting of three objects:
+#'   \tabular{lll}{
+#'   \code{Local_LRF_Info}\tab \tab The information on the local randomForest as found in the \code{$Hier_Struc$LRF_Info} data frame. \cr
+#'   \code{Local_Data}    \tab \tab The Case ID's of all cases that were used as training data for the local randomForest. \cr
+#'   \code{Local_RF}      \tab \tab an object of class ranomForest for the local classifier. See package randomForest for details. \cr
+#'   }}
+#'   \item{Order_Local_RF}{data frame containing the order in which local randomForests are stored in the \code{All_Local_RF} list.}
+#'   \item{call}{the call to function \code{Run_HRF}.}
+#'   
+#'   @seealso 
+#'   \code{\link{Extract_Votes}} for extracting the proportion of votes, 
+#'   \code{\link{HRF_Importance}} for variable importance,
+#'   \code{\link{Run_HRF_As_Flat}} for running a flat classification,
+#'   \code{\link{Plot_Hie_Tree}} for plotting the class structure,
+#'   \code{\link{HRF_Performance}} for assising accuracy,
+#'   
+#'   @references
+#'   Breiman, L. 2001. Random forests. \emph{Machine Learning} 45:5–32.
+ 
 
 
-Run_HRF=function(Train_Data,                      # the data frame with the training data
-                 Case_ID,                         # a character or integer, specifying the name of the column or number of column  (respectivaly) that should be used as case IDs in Train_Data,                                  
-                 Hie_Levels,                      # a vector of character or integers, containing the names of column or the numberrs of the columns (respectively) of the hierarchical levels in Train_Data. order  of columns in Train_Data should be from the root to the leaves
-                 Internal_End_Path = FALSE,       # Logical (TRUE/FALSE)- are all terminal nodes ending in the lowest level of the hierarchy?
-                 End_Path_Name     = "End_Path",  # Character - the name used in level i+1 for terminal nodes ending in level i.
-                 Root_Include      = FALSE,       # Logical (TRUE/FALSE)is the tree root included in Hie_Levels?
-                 Root_Name         = "TREE_ROOT", # Character - name to use for the tree root
-                 Exp_Var           = NA,          # a vector of character or integers, containing the names of column or the numberrs of the columns (respectively in Train_Data to be used as explanatory variables in the random forest, default takes all columns other than Case_ID and Hie_Levels                            
-                 mtry              = if(!is.integer(mtry)) mtry="tuneRF",    # integer, Number of variables randomly sampled as candidates at each split. Note that the default is to use tuneRF function of randomForest for each local classifier. setting mtry="tuneRF_2" will use a sligtly different version of tuneRF
-                 ntree             = 500,         # number of trees to grow in each local classifier
-                 importance        = TRUE,        # Should importance of predictors be assessed?
-                 proximity         = TRUE,        # should the proximity be calcualted? 
-                 keep.forest       = TRUE,        # Should proximity measure among the rows be calculated?
-                 keep.inbag        = TRUE,        # should a n by ntree matrix be returned that keeps track of which samples are "in-bag” in which trees (but not how many times, if sampling with replacement). Required for the permutation-based accuracy assesments
+
+
+Run_HRF=function(Train_Data, Case_ID, 
+                 Hie_Levels, 
+                 Internal_End_Path = FALSE,       
+                 End_Path_Name     = "End_Path",  
+                 Root_Include      = FALSE,       
+                 Root_Name         = "TREE_ROOT", 
+                 Exp_Var           = NA,                                    
+                 mtry              = if(!is.integer(mtry)) mtry="tuneRF",   
+                 ntree             = 500,         
+                 importance        = TRUE,        
+                 proximity         = TRUE,        
+                 keep.forest       = TRUE,        
+                 keep.inbag        = TRUE,        
                  ...)
 {
   
@@ -239,13 +352,15 @@ for (i in 1:dim(LRF_Info)[1])
   cat(paste("\n","####################################", "\n",sep=""))
   cat(paste("\n","Starting the RandomForest algorithm for local classifer: ",LRF_Info[i,1],"\n",sep=""))
   
+  
   # estimate mtry
+  mtry_local <- mtry
   if(mtry=="tuneRF")
     {
     cat(paste("\n","Estimating mtry (tuneRF) for local classifer: ",LRF_Info[i,1],"\n",sep=""))
     Tune_RF    <- tuneRF(y=Y_RF,x=X_RF)   # run the tuneRF function of RandomForest
     mtry_local <- Tune_RF[match(x=min(Tune_RF[,2]),table=Tune_RF[,2]),1] # identify the suggested mtry
-    }
+    } 
   
   # estimate mtry
   if(mtry=="tuneRF_2")
@@ -253,9 +368,7 @@ for (i in 1:dim(LRF_Info)[1])
     cat(paste("\n","Estimating mtry (tuneRF) for local classifer: ",LRF_Info[i,1],"\n",sep=""))
     Tune_RF    <- tuneRF_2(y=Y_RF,x=X_RF)   # run the tuneRF function of RandomForest
     mtry_local <- Tune_RF[match(x=min(Tune_RF[,2]),table=Tune_RF[,2]),1] # identify the suggested mtry
-  }
-  
-  else {mtry_local <- mtry}
+  } #else {mtry_local <- mtry}
   
   cat(paste("\n","mtry = ",mtry_local,"\n",sep="" ))
  
@@ -273,8 +386,9 @@ for (i in 1:dim(LRF_Info)[1])
   
   cat(paste("\n","Storing the local RandomForest object and additional data","\n",sep=""))
   # assign the Local_Data and the Local_RF to their slot in the All_Local_RF list 
-  All_Local_RF[[i]] <- list(Local_Data = Local_Data,
-                            Local_RF   = Local_RF) 
+  All_Local_RF[[i]] <- list(Local_LRF_Info =  Local_Data$Local_Class_Info,   # the infromation on the local classifier
+                            Local_Data = Local_Data$Local_Train_Case_ID,    # the Case Id's of the local training data
+                            Local_RF   = Local_RF)                           # The local randomForest object
   
   cat(paste("\n","Ending the RandomForest algorithm for local classifer: ",LRF_Info[i,1],"\n",sep=""))
   cat(paste("\n","####################################", "\n",sep=""))
@@ -292,7 +406,7 @@ Hie_RF <- list(Hier_Struc       = Hier_Struc,
                Hie_Levels_2     = Hie_Levels_2,
                Exp_Var_2        = Exp_Var_2,
                All_Local_RF     = All_Local_RF,
-               Classifer_in_All_Local_RF = Classifer_in_All_Local_RF, # The location in All_Local_RF in which the data and model of each local classifer is stored
+               Order_Local_RF   = Classifer_in_All_Local_RF, # The location in All_Local_RF in which the data and model of each local classifer is stored
                call             = match.call()                        # the call
                )
 class(Hie_RF) <- "Hier.Random.Forest"

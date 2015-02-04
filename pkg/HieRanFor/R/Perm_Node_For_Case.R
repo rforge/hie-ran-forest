@@ -1,4 +1,19 @@
-
+#' Randomly select a class from theinbag trees down the hierarchical class structure
+#' 
+#' STILL UNDER DEVELOPMENT!!!
+#' This function is for a single case. It dependes on individual trees in each
+#' local classifer and as such can only work when \code{Run_HRF} was set to
+#' \code{keep.inbag} = \code{TRUE}.
+#' For a given case, it starts in the tree root and randomly select one tree in 
+#' which the case was OOB (Out Of Bag). THepredicted clas of this tree is set as
+#' the new parent class and returned if the class is a terminal node. If the 
+#' class is an internal node, the next local classifer down the hierarchy from 
+#' the new parent node is identified and the process continues: A random tree in
+#' which the case is OOB is choiosen and its predicted class is set as the new 
+#' parent node. This continues untila terminal node is reached. Over multiple
+#' permutation, the proportion of times in which each terminal node is sleceted
+#' will converge to the \code{Mulltiplicative_Prop_Votes}.
+#' 
 
 Perm_Node_For_Case = function(Case_Data,                   # Data frame, containing the case_ID and explantory variables for the focal case
                               Case_ID=1,                   # Integer of character, specifying the number or coulmn name in Case_Data that contains the Case_ID
@@ -7,7 +22,8 @@ Perm_Node_For_Case = function(Case_Data,                   # Data frame, contain
                               ...)
 {  # Start function
   
-  require(randomForest)
+  # require(randomForest)
+  
   # Make some checks and Change from a character to numeric column number 
   
   if(is.character(Case_ID))
@@ -31,7 +47,7 @@ Perm_Node_For_Case = function(Case_Data,                   # Data frame, contain
   LRF_Info          <- Hie_RF$Hier_Struc$LRF_Info        # the info data frame on each local classifer
   Nodes_Info        <- Hie_RF$Hier_Struc$Nodes_Info      # the info data frame on each node
   All_Local_RF      <- Hie_RF$All_Local_RF               # list containing all the local random forests. For each random forest, there is a list with two lists: the Local_Data and the Local_RF
-  Classifer_in_List <- Hie_RF$Classifer_in_All_Local_RF  # THe location in All_Local_RF in which the data and model of each local classifer is stored
+  Classifer_in_List <- Hie_RF$Order_Local_RF  # THe location in All_Local_RF in which the data and model of each local classifer is stored
   
   # arrange the data for the focal case
   Case_Exp_Data <-  Case_Data[1,Exp_Var]
@@ -48,10 +64,11 @@ Perm_Node_For_Case = function(Case_Data,                   # Data frame, contain
     
     # extract data for the local classifer
     Local_RF_Obj  <- All_Local_RF[[Place_in_All]]   # a list with Local_Data and Local_Rf
-    Local_Data    <- Local_RF_Obj$Local_Data        # list, the local dat used in local classifer i
+    Local_Train_Case_ID <- as.data.frame(Local_RF_Obj$Local_Data)        # list, the local dat used in local classifer i
+    colnames(Local_Train_Case_ID)[1] <- colnames(Hie_RF$Train_Data_Ready)[Hie_RF$Case_ID_2]  
     Local_RF      <- Local_RF_Obj$Local_RF          # object of class RandomForest for local classifer i
     
-    Local_Train_Case_ID <- as.data.frame(Local_Data$Local_Train_Case_ID)      # the Case_ID of the Local_Train_Data
+    #Local_Train_Case_ID <- as.data.frame(Local_Data$Local_Train_Case_ID)      # the Case_ID of the Local_Train_Data
     
     # explore if the Focal_Case is in the Training data of the local classifier
     # returns NA if not and the integer with the row number if yes
@@ -62,7 +79,7 @@ Perm_Node_For_Case = function(Case_Data,                   # Data frame, contain
       
       # if yes use the inbag and keep forest of predict - output -->  a vector with potential child nodes
       # predict the child node for the focal case using all trees
-      Predict_Case <- predict(object = Local_RF,
+      Predict_Case <- randomForest::predict(object = Local_RF,
                               newdata = Case_Exp_Data,
                               predict.all = TRUE)$individual
       Predict_Case <- as.data.frame(Predict_Case)
@@ -82,7 +99,7 @@ Perm_Node_For_Case = function(Case_Data,                   # Data frame, contain
       # if not use predict -output --> a vector with potential child nodes
      
       # predict the child node for the focal case using all trees
-      Predict_Case <- predict(object = Local_RF,
+      Predict_Case <- randomForest::predict(object = Local_RF,
                               newdata = Case_Exp_Data,
                               predict.all = TRUE)$individual
       Predict_Case <- as.data.frame(Predict_Case)

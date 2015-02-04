@@ -1,16 +1,56 @@
+#' predict and asses performance of New_Data, for which the 'true' class is 
+#' known.
+#' 
+#' @author Yoni Gavish <gavishyoni@@gmail.com>
+#' 
+#' @param Hie_RF              Object of class Hier.Random.Forest - the output of
+#'   Run_HRF.
+#' @param New_Data            The data frame containing additional cases that 
+#'   were note a part of the original training.
+#' @param New_Data_Case_ID    Integer, specifying the column number with the 
+#'   Case_ID in the New_Data data frame. The Case ID values should be unique and
+#'   different from those in the training data.
+#' @param New_Data_Exp_Var    Vector of integers, specifying the columns of 
+#'   New_Data that contains the same set of explanatory variables as used in the
+#'   training of Hie_RF. Default is all column except New_Data_Case_ID and 
+#'   New_Data_Hie.
+#' @param New_Data_Hie        Vector of character or integers, containing the 
+#'   names or column numbers of the hierarchical levels in New_Data. Order of 
+#'   columns should be from the tree root to the terminal nodes. If a single 
+#'   column is provided, it should contain only terminal nodes.
+#' @param Crisp_Rule         The method of translating proportion of votes to a 
+#'   crisp category. See details in HRF_Performance.
+#' @param Perm_Num           Integer, number of random permutations for each
+#'   case if 'Multiplicative_Permutation' is applied. See details in
+#'   HRF_Performance.
+#' @param Div_Logical        Logical, if TRUE progress when 
+#'   'Multiplicative_Permutation' is applied will be printed every Div_Print 
+#'   permutations
+#' @param Per_Index         The performance and accuracy indices to compute. See
+#'   details in HRF_Performance.
+#' @param By_Node           Logical, if TRUE performances indices will be 
+#'   estimated for each terminal node as well as for the overall confusion 
+#'   matrix.
+#' @param Beta_H_F          Numeric in the range Beta_H_F>=0. Controls weights 
+#'   in the hierarchical F measure index. See Hie_F_Measure for details.
+#' @param ...               Optional parameters to be passed to low level 
+#'   functions.
+#'   
+
+
 # Function - predict and asses performance of New_Data, for which the 'true' class is known
 
-HRF_Performance_New_Data = function(Hie_RF,                                         # object of class Hier.Random.Forest - the output of Run_HRF
-                                    New_Data,                               #  data frame containing  cases that were note a part of the original traning set, for which the prpoportion of votes should be extracted
-                                    New_Data_Case_ID = 1,                   # Integer, specifying the column number that contains the Case_ID in the New_Data data frame
-                                    New_Data_Exp_Var = NA,  # vector of integers containg the coulmn numbers that contains the same explanatory variables as those used in the Hie_RF. If not provided, the function takes all coulmns other than New_Data_Case_ID and New_Data_Hie
-                                    New_Data_Hie,                            # a vector of character or integers, containing the names of column or the numberrs of the columns (respectively) of the hierarchical levels in New_Data. order  of columns in Train_Data should be from the root to the leaves. If a single column is provided, it should contain only terminal nodes. 
+HRF_Performance_New_Data = function(Hie_RF,
+                                    New_Data,
+                                    New_Data_Case_ID = 1,
+                                    New_Data_Exp_Var = NA,
+                                    New_Data_Hie,
                                     Crisp_Rule  = c("Multiplicative_Majority","Multiplicative_Permutation","Setpwise_Majority"),
                                     Perm_Num = 500,
-                                    Div_Logical = TRUE,                             # Logical, if TRUE progress when permutating the proportion of votes will be printed every Div_Print permutations
+                                    Div_Logical = TRUE,                          
                                     Div_Print = 25,
-                                    Per_Index = c("Flat_Measures","Hie_F_Measure"),      # the accurcary index to use. 
-                                    By_Node = TRUE,                                 # logical, indicating whether several indices for each node should be returned, if TRUE, the indices will appear in Hie_Performance after the overall performance measures 
+                                    Per_Index = c("Flat_Measures","Hie_F_Measure"),
+                                    By_Node = TRUE,
                                     Beta_H_F = 1,
                                     ...
                                     )

@@ -1,15 +1,15 @@
 Package: HieRanFor
 Type: Package
 Title: Hierarchical randomForest
-Version: 1.0
+Version: 0.1
 Date: 2015-01-27
 Author: Yoni Gavish <gavishyoni@gmail.com>
 Maintainer: Yoni Gavish <gavishyoni@gmail.com>
-Depends: randomForest, e1071, caret, reshape, doBy
-Suggests: ggplot2
+Imports: randomForest 
+Suggests: ggplot2, treemap, e1071, caret, reshape, doBy
 Description: The package runs randomForest as the lcoal classifciation algorithm for each parent node along a pre-defined hierarhcial tree like class strucutre. 
      The proportion of votes for the terminal nodes of the class strucutre are estimates in two ways: 
      1. step-wise majority rule- starting from the tree root, each cell is classifed to the child with the highest proportion of votes until a terminal node is reached
      2. multiplicative majority rule - the proportion of votes are multiplied along each path from the tree root to each terminal node
      The package also returns several flat and hierarchical performance indices
-License: GDP-2
+License: GPL-2

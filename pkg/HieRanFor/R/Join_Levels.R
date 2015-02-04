@@ -1,3 +1,37 @@
+#' Combines the factor levels of two input vectors
+#' 
+#' This function takes two vectors, combines thier factor levels, and return a 
+#' list with the same vectors, only with identical and full factor levels. The 
+#' order of the factors is first all the factors of Vector_1 then the added 
+#' factor levels of Vector_2. As randomForest canot predict if any input
+#' variables of a new data contains factor levels that were not included in the
+#' training data, we recomend running this function on each categorical input
+#' variable of the training and New_Data before running the hierarchical
+#' randomForest.
+#' 
+#' @author Yoni Gavish <gavishyoni@@gmail.com>
+#'   
+#' @param Vector_1     The first vector.
+#' @param Vector_2     The second vector.
+#'   
+#' @return A list with two vectors, aranged according to the input order
+#' @examples
+#' # create two vectors
+#' vec.1 <- as.factor(rep(c("a","b","c"),10))
+#' vec.2 <- as.factor(rep(c("g","a","f","b"),20))
+#' 
+#' # run the function
+#' new.Vec <- Join_Levels(vec.1,vec.2)
+#' 
+#' # Re-assign to the original vecotrs
+#' vec.1 <- new.Vec[[1]]
+#' vec.2 <- new.Vec[[2]]
+#' 
+#' # note the levels
+#' levels(vec.1)
+#' levels(vec.2)
+#' 
+#' 
 
 # takes as input two vecotrs, turn them into factors, add to each one the levels that are not found in the other and sort the levels to be in the same order. Returns the two modified vectors
 Join_Levels = function(Vector_1,  # the first vector,  order will be kept in the return list

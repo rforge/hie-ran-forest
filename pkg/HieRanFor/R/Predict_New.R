@@ -1,3 +1,8 @@
+#' predict function for New_Data using an existing  object of class \code{"Hier.Random.Forest"}
+#' 
+#' 
+#' 
+
 
 # Predict new data according to an existing HRF object
 

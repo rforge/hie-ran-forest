@@ -1,22 +1,22 @@
 
 
-# Function, compares the names of the explnaatory variables of New_Data with those used when creating HRF
+# Function, compares the names of the explnaatory variables of new.data with those used when creating HRF
 # Stops the calling function if the match is not perfect
 
-Check_New_Exp_Var = function(Hie_RF, # Object of class Hier.Random.Forest
-                             New_Data,  # the New_Data that is expected to be used with Predict
-                             New_Data_Exp_Var)  # vector specifying the column numbers of the explanatory variables in New_Data
+Check_New_Exp_Var = function(hie.RF, # Object of class Hier.Random.Forest
+                             new.data,  # the new.data that is expected to be used with Predict
+                             new.data.exp.var)  # vector specifying the column numbers of the explanatory variables in new.data
 {
-  Train_Exp_Var <- names(Hie_RF$Train_Data_Ready)[Hie_RF$Exp_Var_2]
-  New_Exp_Var   <- names(New_Data)[New_Data_Exp_Var]
+  train.exp.var <- names(hie.RF$Train_Data_Ready)[hie.RF$Exp_Var_2]
+  new.exp.var   <- names(new.data)[new.data.exp.var]
   
-  Obs_Length <- length(intersect(New_Exp_Var ,Train_Exp_Var))
-  Exp_Length_Train <- length(Train_Exp_Var)
-  Exp_Length_New <- length(New_Exp_Var)
+  obs.length <- length(intersect(new.exp.var ,train.exp.var))
+  exp.length.train <- length(train.exp.var)
+  exp.length.new<- length(new.exp.var)
   
-  if(Obs_Length!=Exp_Length_Train || Obs_Length!=Exp_Length_New )
+  if(obs.length!=exp.length.train || obs.length!=exp.length.new)
   {
-    stop("\n The explanatory variables in New_Data do not match those of Hie_RF \n Please ensure that all explanatory variables have identical names or that the column numbers are coorrect")
+    stop("\n The explanatory variables in new.data do not match those of hie.RF \n Please ensure that all explanatory variables have identical names or that the column numbers are coorrect")
   }
   
   

@@ -1,23 +1,70 @@
+#' For all cases, the proportion of OOB votes that each node recieved in
+#' each local randomForest classifer.
+#' 
+#' The funtion takes as input an object of class Hier.Random.Forest. For each 
+#' case in the original training data or in New_Data, the function extracts the
+#' proportion of OOB votes for each node (internal and external) in each local
+#' classifier.
+#' 
+#' @author Yoni Gavish <gavishyoni@@gmail.com>
+#' 
+#' @param Hie_RF              Object of class \code{"Hier.Random.Forest"} - the output of
+#'   Run_HRF.
+#' @param Train_Predict       Logical, if TRUE, returns for each case in the
+#'   training data the proportion of OOB votes that each class received in each
+#'   local randomForesst classifer. If FALSE, only the votes for New_Data are
+#'   returned.
+#' @param New_Data            Optional data frame containing additional cases
+#'   that were note a part of the original training set, for which the proportion
+#'   of votes should be extracted.
+#' @param New_Data_Case_ID    Integer, specifying the column number with the
+#'   Case_ID in the New_Data data frame. The Case ID values should be unique
+#'   and different from those in the training data.
+#' @param New_Data_Exp_Var    Vector of integers, specifying the columns of
+#'   New_Data that contains the same set of explanatory variables as used in the
+#'   training of Hie_RF. Before running the Run_HRF, we recommend using the
+#'   Join_Levels function on each categorical variables to ensure the extraction
+#'   of votes for New_Data.
+#' @param Bind_Train_New      Logical, if TRUE the cases in the training set and
+#'   New_Data will be binded to one output data frame (along with the two
+#'   seperate ones).
+#' @param ...                 Optional parameters to be passed to the low level
+#'   functions.
+#' 
+#' @details For the training data, only OOB votes are used in each local
+#' classifer. 
+#' @return  a list consisting of up to three of the following data frames:
+#' \item{Prop_Vote_Train}{The proportion of OOB votes that each case from the
+#'   training dataset received in each local classifer.}
+#' \item{Prop_Vote_New}{The proportion of OOB votes that each case from the
+#'   New_Data dataset received in each local classifer.}
+#' \item{Prop_Vote_Full}{Bind of Prop_Vote_Train and Prop_Vote_New if
+#'   Bind_Train_New is TRUE.}
+#' 
 
-# returns the porportion of OOB votes that each node recieved in each local classifer
-# if Train_Predict=TRUE, runs on all the training data, 
-# if is.null(New_Data)==FALSE, runs also on the New_Data (sould be in similar form as the train_data)
-# throughout, Case_ID is used to avoid mixing different cases
-# For the training data and any local classifier:
-# The OOB votes are used for cases that are a real child of the parent node
-# the ouput of predict.randomForest is used for cases that are not 'real' chiles of the parent node
 
 
-Extract_Votes = function(Hie_RF,                                 # object of class Hier.Random.Forest - the output of Run_HRF
-                         Train_Predict    = TRUE,                # logical, if true, the OOB votes that each case received for each local classifier are returned
-                         New_Data         = NULL,                # Optional data frame containing additional cases that were note a part of the original traning set, for which the prpoportion of votes should be extracted
-                         New_Data_Case_ID = 1,                   # Integer, specifying the column number that contains the Case_ID in the New_Data data frame
+# returns the porportion of OOB votes that each node recieved in each local
+# classifer if Train_Predict=TRUE, runs on all the training data, if
+# is.null(New_Data)==FALSE, runs also on the New_Data (sould be in similar form
+# as the train_data) throughout, Case_ID is used to avoid mixing different cases
+# For the training data and any local classifier: The OOB votes are used for
+# cases that are a real child of the parent node the ouput of
+# predict.randomForest is used for cases that are not 'real' childs of the
+# parent node
+
+
+Extract_Votes = function(Hie_RF,                                 
+                         Train_Predict    = TRUE,                
+                         New_Data         = NULL,                
+                         New_Data_Case_ID = 1,                   
                          New_Data_Exp_Var = c(2:ncol(New_Data)), # vector of integers, specifying the columns of New_Data that contains the same set of explanatory variables as used in the training of the hierarchical Random Forest. Note about the levels
                          Bind_Train_New      = FALSE,               # logical, If is.null(New_Data)==FALSE, should the prediction of the training
                          ...)
 { # start function
   
-  require(randomForest)
+  #require(randomForest)
+  
   # check that there is some data to work on
   if(is.null(New_Data) && !Train_Predict)
   {stop(paste("\n",
@@ -60,10 +107,10 @@ Extract_Votes = function(Hie_RF,                                 # object of cla
     
     # extract data for the local classifer
     Local_RF_Obj  <- All_Local_RF[[i]]        # a list with Local_Data and Local_Rf
-    Local_Data    <- Local_RF_Obj$Local_Data  # list, the local dat used in local classifer i
+    Local_Train_Case_ID    <- as.data.frame(Local_RF_Obj$Local_Data)  # the Case_ID of the Local_Train_Data
     Local_RF      <- Local_RF_Obj$Local_RF    # object of class RandomForest for local classifer i
     
-    Local_Train_Case_ID              <- as.data.frame(Local_Data$Local_Train_Case_ID)      # the Case_ID of the Local_Train_Data
+    #Local_Train_Case_ID              <- as.data.frame(Local_Data$Local_Train_Case_ID)      # the Case_ID of the Local_Train_Data
     Local_Votes                      <- as.data.frame(Local_RF$votes)                      # the porportion of OOB votes for each category of each case in the Local_RF
     Local_Case_ID_Votes              <- cbind(Local_Train_Case_ID,Local_Votes)             # binding the Case_ID with the votes
     colnames(Local_Case_ID_Votes)[1] <- colnames(Train_Data_Ready)[Case_ID_2]              # arranging the colomn name for Case_ID
@@ -87,7 +134,6 @@ Extract_Votes = function(Hie_RF,                                 # object of cla
       
       # remove all the local data to ensure next i start from clear
       rm(list=c("Local_RF_Obj",
-                "Local_Data",
                 "Local_RF",
                 "Local_Train_Case_ID",
                 "Local_Votes"))
@@ -104,7 +150,7 @@ Extract_Votes = function(Hie_RF,                                 # object of cla
       
       
       # Run the Not_Local_Train cases down the local classifer using predict.randomForest #
-      Predict_Local_RF <- predict(object=Local_RF,
+      Predict_Local_RF <- randomForest::predict(object=Local_RF,
                                   newdata=Not_Local_Train[,Exp_Var_2] ,# the explanatory variables for the local train data
                                   type="vote",
                                   norm.votes=TRUE)
@@ -123,7 +169,6 @@ Extract_Votes = function(Hie_RF,                                 # object of cla
       
       # remove all the local data to ensure next i start from clear
       rm(list=c("Local_RF_Obj",
-                "Local_Data",
                 "Local_RF",
                 "Local_Train_Case_ID",
                 "Local_Votes",
@@ -207,7 +252,7 @@ Extract_Votes = function(Hie_RF,                                 # object of cla
      
       Local_RF      <- Local_RF_Obj$Local_RF    # object of class RandomForest for local classifer i
       
-      Predict_Local_RF <- predict(object=Local_RF,
+      Predict_Local_RF <- randomForest::predict(object=Local_RF,
                                  newdata=New_Data[,New_Data_Exp_Var] ,# the explanatory variables for the local train data
                                  type="vote",
                                  norm.votes=TRUE)
