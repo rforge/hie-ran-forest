@@ -1,3 +1,29 @@
 Add TODOs here
 
 
+
+-------------------------------------------------------
+4. ==> 16 Feb. 2015
+
+Deal with the warnings returned by RunHRf: 
+In data.row.names(row.names, rowsi, i) :
+  some row.names duplicated: 473 --> row.names NOT used
+
+-------------------------------------------------------
+3. ==> 11 Feb. 2015
+
+if end.path.data is not called in RunHRF, then hie.RF$call$end.path.name is NULL. 
+Need to open every function and explore all the data retrieved by $call and make sure it is correct
+for end.path.name, adding this line will do:
+end.path.name     <- hie.RF$call$end.path.name
+   if(is.null(end.path.name)){end.path.name <- "END.PATH"}
+
+-------------------------------------------------------
+2. ==> 11 Feb. 2015
+
+Deal with Div.Logical and Div.Print - leave only one of them and get the other from it.
+Combine soulition with overall verbose logical.
+
+-------------------------------------------------------
+1. ==> 09 Feb. 2015
+  Change the name of the class from Hier.Random.Forest to HRF -DONE

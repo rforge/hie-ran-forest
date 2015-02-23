@@ -1,1 +1,149 @@
-Add news here
+Latest news on the package:     HieRanFo
+
+------------------------------------------------------
+22.  ==> 23 Feb. 2015
+in plot.HRF , the input param:  hie.RF changed to x
+in predict.HRF , the input param:  hie.RF changed to object
+------------------------------------------------------
+21.  ==> 17 Feb. 2015
+RandomHRF - now returns NA for train.data or new.data if cases.t.node.train or cases.t.node.new are set to 0.
+
+------------------------------------------------------
+20.  ==> 16 Feb. 2015
+Figures added to some help files:
+  1. formulas for HieFMEasrue
+  2. example with a simple hierarchy for PerformanceHRF
+
+------------------------------------------------------
+19.  ==> 13 Feb. 2015
+in PerformanceFlatHRf
+Change to output list
+1. train.flat.cas was removed and the observed terminal node was added as one additional column at the end of crisp.case.class
+2. The varioues data frame that holds the performance measure are now returned as a single data frame under hie.performance
+
+------------------------------------------------------
+18.  ==> 13 Feb. 2015
+Function RandomHRF: 
+A new param was added:  new.data.observed
+If TRUE (defalut is FALSE) the observd hierarchy is added to new.data as well.
+
+
+------------------------------------------------------
+17.  ==> 13 Feb. 2015
+PredictNewHRF is now visible- allows predicting the crisp class whent heoserved calss of new data is unavaible and performance measures can not be quantified. 
+
+
+------------------------------------------------------
+16.  ==> 12 Feb. 2015
+in PerformanceHRf
+Change to output list
+1. train.data.acc was removed and the observed terminal node was added as one additional column at the end of crisp.case.class
+2. The varioues data frame that holds the performance measure are now returned as a single data frame under hie.performance
+
+------------------------------------------------------
+15.  ==> 12 Feb. 2015
+OliveOilHie was added as a RData file and its RD documentation created
+It is also used in the examples+ provide an example for tuneRF2 (fails for tuneRF)
+------------------------------------------------------
+14.  ==> 11 Feb. 2015
+PermNodeForCase was changed to invisible and will not be included in the package documentary
+
+------------------------------------------------------
+13.  ==> 11 Feb. 2015 
+examples written for:
+
+------------------------------------------------------
+12.  ==> 11 Feb. 2015 
+a few small bug fixed:
+      1. Add the supp.warn option to PlotImportanceHie to deal factor levels
+      2. change 'case.probs' to 'case.props' when calling GetCaseMultiProb from GetMultPropVotes
+
+     
+
+------------------------------------------------------
+11.  ==> 10 Feb. 2015 
+default of mtry in runHRF changed to "tuneRF"
+
+------------------------------------------------------
+11.  ==> 10 Feb. 2015 
+   Function names of all function changed
+   code of all function set to google's R style guide
+   Final list of export and internal functions
+
+------------------------------------------------------
+10.  ==> 09 Feb. 2015 
+Change of function name:
+   Plot_Hie_Tree    --> Plot.HRF
+   Plot_Cat_Cat_Var --> PlotImportanceHie
+   Run_HRF_As_Flat  --> RunFlatHRF
+   TuneRF_2         --> TuneRF2
+-------------------------------------------------------
+9.  ==> 09 Feb. 2015 
+Input for Plot_Hie_Tree changed to an object of class HRF
+
+
+-------------------------------------------------------
+8.  ==> 09 Feb. 2015 
+Variables names updated to Google's R style guide:
+   HRF_Performance_New_Data
+   Predict_New
+   Plot_Cat_Cat_Var
+   Plot_Hie_Tree
+
+-------------------------------------------------------
+7.  ==> 06 Feb. 2015 
+Variables names updated to Google's R style guide:
+   Hie_Importance 
+   Multiplicative_Prop_Votes
+   Stepwise_Majority_Rule
+   HRF_Performance
+   
+-------------------------------------------------------
+6. ==> 05 Feb. 2015  
+Variables names updated to Google's R style guide:
+   Multiplicative_Majority_Rule
+   Perm_Multiplicative_Term_Node
+   Join_Levels
+   Get_Terminal_Node
+   Num_Shared_Nodes
+   Hie_F_Measure
+   Flat_RF_Performance
+
+-------------------------------------------------------
+5. ==> 05 Feb. 2015  
+   In Extract_Votes:
+      change 'randomForest::predict' to 'predict' due to error message
+      Variables names updated to Google's R style guide
+
+-------------------------------------------------------
+4. ==> 05 Feb. 2015  
+Variables names updated to Google's R style guide:
+   Case_Multiplicative_Prob
+   Check_Hie_Levels
+   Check_New_Exp_Var
+   Check_New_ID
+
+-------------------------------------------------------
+3. ==> 04 Feb. 2015  
+Variables names updated to Google's R style guide:
+   Check_Case_ID
+   Check_Multi_Levels
+   Sort_Unique_Path
+   Subset_LRF_Cases
+   Check_Not_DAG
+   Check_New_Exp_Var
+-------------------------------------------------------
+2. ==> 04 Feb. 2015  
+Run_HRF updated
+     Variables names updated to Google's R style guide
+
+-------------------------------------------------------
+1. ==> 04 Feb. 2015
+Hie_Importance function upadated - 
+   input changed to hie.RF, 
+   user choice of output format added.
+   roxygen created and edited
+   Variables names updated to Google's R style guide
+   require() removed
+
+--------------------------------------------------------
