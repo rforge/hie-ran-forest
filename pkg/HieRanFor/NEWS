@@ -1,5 +1,31 @@
 Latest news on the package:     HieRanFo
 
+
+
+
+------------------------------------------------------
+26.  ==> 25 Feb. 2015
+Figures that appear in the help file were copied into a sub folder under:
+man/figures/tex/latex
+and a path was added and refereshed in MikTEx. 
+This is done to solve errors in CMD check tht could not locate the files
+
+------------------------------------------------------
+25.  ==> 25 Feb. 2015
+In functions using ggplot2, 
+arguments such as X.min <- NULL 
+were added to avoid CMD check errors:
+No visible binding for global variable Note in R CMD check
+
+------------------------------------------------------
+24.  ==> 25 Feb. 2015
+ggplot2 and randomForest were added under @import in relevant function
+
+------------------------------------------------------
+23.  ==> 25 Feb. 2015
+An R file conatinaing the roxygen code the package desciption was created 
+a small change in the description file
+
 ------------------------------------------------------
 22.  ==> 23 Feb. 2015
 in plot.HRF , the input param:  hie.RF changed to x

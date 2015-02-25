@@ -1,0 +1,144 @@
+#' HieRanFor: A package for running a hierarchical randomFroest analysis.
+#'
+#' Runs randomForest as the local classification algorithm for
+#' each parent node along a pre-defined hierarchical tree like class structure.
+#' Contains a predict and plot functions and calculation of various flat and
+#' hierarchical performance measures. Further contains predict and performance
+#' function for new data and performance assessment for flat
+#' classification. \cr
+#' 
+#' {\tabular{ll}{
+#'   Package: \tab HieRanFor  \cr
+#'   Type:    \tab Package    \cr
+#'   Version: \tab 1.0        \cr
+#'   Date:    \tab 2015-01-27 \cr
+#'   License: \tab GPL-2      \cr}}
+#'   
+#' @author 
+#' Written and maintained by:\cr
+#' Yoni Gavish <gavishyoni@@gmail.com> \cr
+#' For reporting bugs, please use \strong{\emph{'HieRanFor - bug report'}} in
+#' the subject line. Feel free to drop me a line with questions requests etc.,
+#' but be sure to include \strong{\emph{'HieRanFor'}} in the subject line.
+#' 
+#' @references
+#' 1. Breiman, L. 2001. Random forests. \emph{Machine Learning} 45:5-32. \cr
+#' 2. Kiritchenko, S., S. Matwin, and F. Famili. 2005. Functional annotation of 
+#' genes using hierarchical text categorization. In: \emph{Proc. of the ACL 
+#' Workshop on Linking Biological Literature, Ontologies and Databases: 
+#' Mining Biological Semantics}.  
+#' 
+#' @seealso 
+#' \code{\link{randomForest}} for details on the randomForest algorithm.  
+#' 
+#' @section Main functions:
+#' {\tabular{lll}{
+#' \code{\link{RunHRF}}            \tab \tab Running a hierarchical randomForest
+#' analysis.   \cr
+#' 
+#' \code{\link{predict.HRF}}       \tab \tab Extracting the proportion of votes
+#' for all local classifiers.   \cr
+#' 
+#' \code{\link{plot.HRF}}          \tab \tab Plotting the class hierarchy
+#' structure.   \cr
+#' 
+#' \code{\link{ImportanceHie}}     \tab \tab Variable importance values at each
+#' local classifier.   \cr
+#' 
+#' \code{\link{PerformanceHRF}}    \tab \tab Assessing performance and accuracy.
+#' \cr
+#' 
+#' \code{\link{PerformanceFlatRF}} \tab \tab Running a \code{"HRF"} object in a
+#' flat classifier and assessing performance.  \cr
+#' 
+#' \code{\link{PredictNewHRF}}     \tab \tab Predicting crisp class for each
+#' case of \code{new.data}.   \cr
+#' 
+#' \code{\link{PerformanceNewHRF}} \tab \tab Assessing performance and accuracy
+#' of \code{new.data}.   \cr
+#' 
+#' \code{\link{HieFMeasure}}       \tab \tab Information on the hierarchical
+#' performance measures. \cr}}
+#' 
+#' @section Definitions:
+#' {\tabular{lll}{
+#' \emph{class hierarchy}      \tab \tab A tree structure containing the tree
+#' root and all the internal nodes and terminal nodes. In \code{HieRanFor}, the
+#' class structure should be a directed tree with directions pointing from nodes
+#' closer to the tree root to those further down the hierarchy. Furthermore,
+#' each node may have only one parent node. See the figure below for an example
+#' of the class hierarchy of the \code{'\link{OliveOilHie}'} dataset.\cr
+#' 
+#' \emph{hierarchical level}   \tab \tab An integer specifying the distance from
+#' the tree root. Each hierarchal level contains a set of nodes within the same 
+#' distance from the tree root. Nodes in the same hierarchical level cannot be 
+#' linked directly to one another in a tree like class hierarchy. e.g., 'L0',
+#' 'L1', 'L2' and 'L3' in the figure.\cr
+#' 
+#' \emph{node}                 \tab \tab A class in the class hierarchy. e.g., 
+#' 'Umbria' or 'Aqulia' in the figure. \cr
+#' 
+#' \emph{tree root}            \tab \tab The node at the lowest hierarchical 
+#' level of the class hierarchy. The only node that has no parent node. All 
+#' other nodes are descended from the tree root node. e.g., 'TREE.ROOT' in the
+#' figure \cr
+#' 
+#' \emph{internal node}         \tab \tab A node that has at least one children 
+#' node. e.g., 'Aqulia'. \cr
+#' 
+#' \emph{terminal node}         \tab \tab A node that has no children nodes.
+#' e.g., 'Umbria'. \cr
+#' 
+#' \emph{parent node}           \tab \tab The linked node one level closer to 
+#' the tree root from a focal node. In a tree like class structure, each 
+#' internal or terminal node have a single parent node. e.g., for the focal node
+#' 'Calabria, the parent node is 'South'.\cr
+#' 
+#' \emph{children node}         \tab \tab A linked node one level below a focal 
+#' node in the class structure. All internal nodes have at least one children 
+#' node. Terminal nodes hav no child nodes. e.g., for the parent node 'South'
+#' the children nodes are 'Aquila', ' Calabria' and 'Sicily'. \cr
+#' 
+#' \emph{sibling nodes}         \tab \tab All nodes that have the same parent
+#' node. e.g., 'Aquila', ' Calabria' and 'Sicily'.\cr
+#' 
+#' \emph{tree depth}            \tab \tab The number of hierarchical levels in 
+#' the class hierarchy where the tree root is considered as level 0. The tree
+#' depth of the figure below is 3. \cr
+#' 
+#' \emph{path}                  \tab \tab A linked sequence of nodes starting 
+#' from the tree root, moving uni-directionally and ending at a terminal node.
+#' e.g., 'Tree.ROOT' --> 'Sardinia' --> ' Sardinia.inland'. \cr
+#' 
+#' \emph{flat classification}   \tab \tab A classification in which all terminal
+#' nodes are considered to be in hierarchical level 1 (i.e., children nodes of 
+#' the tree root). A flat classification will classify all the terminal nodes in
+#' a single local classifier, ignoring the class hierarchy. \cr
+#' 
+#' \emph{hierarchical classification}   \tab \tab A classification in which at 
+#' least one terminal node is from hierarchical level > 1 (i.e., there is at 
+#' least one internal node). In the figure below, 6 local classifiers are
+#' required to run a single hierarchical classification.\cr
+#' 
+#' \emph{local classifier}      \tab \tab A single flat classification within an
+#' hierarchical classification. A local classifier is a randomForest algorithm 
+#' that classifies all the children nodes of a given parent node. e.g., the 
+#' local classifier 'C.6' classifies 'Linguria.east' and 'Linguria.west' --> the
+#' children nodes of 'Linguria'. \cr
+#' 
+#' \emph{case}                  \tab \tab A single data point in the training
+#' data or new data. \cr
+#' 
+#' \emph{vote}                  \tab \tab The output of a single classification 
+#' tree in a single local classifier for a single case. See
+#' \code{\link{randomForest}} for more details. \cr
+#' }}
+#'
+#' \if{html}{\figure{OliveOilClassHie.jpeg}}
+#' \if{latex}{\figure{OliveOilClassHie.jpeg}{options: width=7cm}}
+#' 
+#' @docType package
+#' @name HieRanFor-package
+NULL
+
+

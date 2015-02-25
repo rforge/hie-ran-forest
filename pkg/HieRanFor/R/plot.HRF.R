@@ -144,6 +144,7 @@
 #' @aliases plot
 #' @method plot HRF
 #' @export 
+#' @import ggplot2
 #' 
 
 
@@ -169,6 +170,7 @@ plot.HRF = function(x,
                     ...)
 {
   
+  X.min <- X.max <- Y.min <- Y.max <- term.int.node <- label.node <- label.class <- NULL
   #require(ggplot2)
   hie.RF <- x
   # define the local environment

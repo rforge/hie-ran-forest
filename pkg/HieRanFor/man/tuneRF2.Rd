@@ -51,6 +51,19 @@ This function returns the \code{mtry} reached before the error. In addition,
 the default option for \code{"plot"} in \code{tuneRF} is changes to
 \code{FALSE}.
 }
+\section{Acknowledgments and details}{
+
+This function borrows the entire code from the function \code{\link{tuneRF}}
+from the package \code{'\link{randomForest}'}. The only change made here
+(other than a change of the default plot to \code{FALSE}) is for the line: \cr
+ \code{Improve <- 1 - errorCur/errorOld} \cr
+From the original \code{tuneRF} code that returns \code{NA} for
+\code{errorOld = 0}. The \code{NA} result with an overall error of
+\code{tuneRF}. This line was replaced with:\cr
+\code{if(errorCur==0){Improve <- improve}} \cr
+\code{if(errorCur!=0){Improve <- 1 - errorCur/errorOld}} \cr
+We recommend using \code{tuneRF2} only when \code{tuneRF} returns an error.
+}
 \examples{
 data(OliveOilHie)
 set.seed(250)

@@ -108,7 +108,7 @@
 #' @aliases predict
 #' 
 #' @export 
-#' 
+#' @import randomForest
 
 
 

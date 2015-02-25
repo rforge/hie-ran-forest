@@ -256,7 +256,7 @@
 #' @aliases randomForest
 #' @export
 #' @exportClass HRF
-#'   
+#' @import randomForest 
 #'   
  
 

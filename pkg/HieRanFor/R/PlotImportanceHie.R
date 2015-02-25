@@ -123,7 +123,7 @@
 #'                   neg.col    = "white") 
 #'     
 #' @export
-#' 
+#' @import ggplot2
 
 
 # takes as input the list generated  by ImportanceHie
@@ -159,7 +159,7 @@ PlotImportanceHie = function(input.data,                                        
   ################### 
   ## Arrange data  ##
   ###################
-  
+  X.var <- Y.var <- NULL
   
   # define the local environment
   localenv <- environment()
@@ -178,7 +178,7 @@ PlotImportanceHie = function(input.data,                                        
   
   work.data$Y.var <- suppressWarnings(factor(work.data$Y.var, 
                             as.character(work.data$Y.var)))
-
+  
  ################################# 
  ## plot when plot.type=="Tile" ##
  #################################

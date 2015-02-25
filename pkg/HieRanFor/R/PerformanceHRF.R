@@ -71,7 +71,7 @@
 #' \emph{B.2} \cr
 #'   
 #' \strong{The \code{"multiplicative.permutation"} method: }\cr Similar to
-#' \code{multiplicative.permutation}, but instead of applying a majority rule, 
+#' \code{multiplicative.majority}, but instead of applying a majority rule, 
 #' the method randomly select a terminal node based on the multiplicative 
 #' probabilities. The user defines the number of permutations and accuracy is 
 #' assessed separately for each permutation. When most cases are classified to 
@@ -160,6 +160,8 @@
 #'    
 #'    \code{"h.F.measure"}    \tab \tab The hierarchical F measure from
 #'    \code{\link{HieFMeasure}}. \cr }}
+#'  These columns are followed by all the \code{by.node} results, with the name
+#'  of each column follows the strucutre: 'nodename;measure'.
 #'    
 #' @examples
 #' # create a random HRF dataset and run HRF analysis
