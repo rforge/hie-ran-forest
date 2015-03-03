@@ -135,7 +135,7 @@
 #' }}
 #'
 #' \if{html}{\figure{OliveOilClassHie.jpeg}}
-#' \if{latex}{\figure{OliveOilClassHie.jpeg}{options: width=7cm}}
+#' \if{latex}{\figure{OliveOilClassHie.jpeg}{options: width=7.2cm}}
 #' 
 #' @docType package
 #' @name HieRanFor-package
