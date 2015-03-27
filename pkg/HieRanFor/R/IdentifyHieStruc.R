@@ -329,7 +329,7 @@ IdentifyHieStruc = function(unique.path,                     # the data frame co
   ### Print some info                                        ###
   ##############################################################
      
-  cat(paste("\n", "Found a total of ", dim(unique.path)[1]," Unique pathes from the tree root to terminal leaves", "\n", sep=""))
+  cat(paste("\n", "Found a total of ", dim(unique.path)[1]," Unique pathes from the tree root to terminal nodes", "\n", sep=""))
      
   cat(paste("\n", dim(lRF.info)[1], " local classifiers are required", "\n", sep=""))
        

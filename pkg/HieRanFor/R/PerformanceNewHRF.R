@@ -241,12 +241,12 @@ PerformanceNewHRF = function(hie.RF,
   {new.data.exp.var  <- match(new.data.exp.var, names(new.data))}
   
   # when new.data.exp.var is not given by the user 
-  if(is.na(new.data.exp.var))
-  {
-    new.data.exp.var <- 1:length(names(new.data)) 
-    new.data.exp.var <- new.data.exp.var[new.data.exp.var != new.data.case.id]       # Remove case.id
-    new.data.exp.var <- new.data.exp.var[!new.data.exp.var %in% new.data.hie]        # Remove hie.levels 
-  }
+  if(length(new.data.exp.var) == 1){
+    if(is.na(new.data.exp.var))
+    { new.data.exp.var <- 1:length(names(new.data)) 
+      new.data.exp.var <- new.data.exp.var[new.data.exp.var != new.data.case.id]       # Remove case.id
+      new.data.exp.var <- new.data.exp.var[!new.data.exp.var %in% new.data.hie]        # Remove hie.levels 
+    }}
   
  
   ######################################################################################

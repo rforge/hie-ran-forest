@@ -127,7 +127,7 @@ tree in a single local classifier for a single case. See
 }}
 
 \if{html}{\figure{OliveOilClassHie.jpeg}}
-\if{latex}{\figure{OliveOilClassHie.jpeg}{options: width=7cm}}
+\if{latex}{\figure{OliveOilClassHie.jpeg}{options: width=7.2cm}}
 }
 \author{
 Written and maintained by:\cr

@@ -350,12 +350,12 @@ RunHRF = function(train.data,
   if(is.character(exp.var)){exp.var  <- match(exp.var , names(train.data))}
   
   # when exp.var is not given by the user 
-  if(is.na(exp.var))
-  {
-    exp.var <- 1:length(names(train.data)) 
-    exp.var <- exp.var[exp.var!=case.ID]         # Remove case.ID
-    exp.var <- exp.var[!exp.var %in% hie.levels] # Remove hie.levels 
-  }
+  if(length(exp.var) == 1){
+    if(is.na(exp.var)){
+      exp.var <- 1:length(names(train.data)) 
+      exp.var <- exp.var[exp.var!=case.ID]         # Remove case.ID
+      exp.var <- exp.var[!exp.var %in% hie.levels] # Remove hie.levels 
+    }}
   
   
   ###############################
@@ -422,10 +422,10 @@ unique.path.name <- cbind(path.name , unique.path)
 hie.levels.data       <- unique.path.name[1 , ]
 hie.levels.data[1 , ] <- NA
 
-if  (root.include){path.data <- unique.path.name[ , hie.levels  ]}
-if (!root.include){path.data <- unique.path.name[ , hie.levels+1]}
+if  (root.include){path.data <- unique.path.name[ , 2:(2 + length(hie.levels))]}
+if (!root.include){path.data <- unique.path.name[ , 3:(2 + length(hie.levels))]}
 
-
+#2:ncol(unique.path.name)
 
 
 # a loop that runs on each row of train data
@@ -447,7 +447,7 @@ for (i in 1:dim(train.data)[1])
 
 train.data.ready <- cbind(case.ID.data , hie.levels.data , exp.var.data)
 
-colnames(train.data.ready)[1] <- case.ID.cha
+colnames(train.data.ready)[1] <- names(train.data)[case.ID]
 
 case.ID.2       <- 1 
 path.name.2     <- 2 
