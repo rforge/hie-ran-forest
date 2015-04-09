@@ -84,11 +84,11 @@ e.g., 'Umbria'. \cr
 \emph{parent node}           \tab \tab The linked node one level closer to
 the tree root from a focal node. In a tree like class structure, each
 internal or terminal node have a single parent node. e.g., for the focal node
-'Calabria, the parent node is 'South'.\cr
+'Calabria', the parent node is 'South'.\cr
 
 \emph{children node}         \tab \tab A linked node one level below a focal
 node in the class structure. All internal nodes have at least one children
-node. Terminal nodes hav no child nodes. e.g., for the parent node 'South'
+node. Terminal nodes have no child nodes. e.g., for the parent node 'South'
 the children nodes are 'Aquila', ' Calabria' and 'Sicily'. \cr
 
 \emph{sibling nodes}         \tab \tab All nodes that have the same parent
