@@ -105,7 +105,6 @@
 #' 
 #' @method predict HRF
 #' 
-#' @aliases predict
 #' 
 #' @export 
 #' @import randomForest

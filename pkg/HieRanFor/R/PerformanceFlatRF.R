@@ -7,7 +7,7 @@
 #' applies two different methods for selecting a single terminal node (given by 
 #' \code{crisp.rule} and described in \code{\link{PerformanceHRF}}). Finally, 
 #' the performance is explored in relation to the observed class using various
-#' perfromance measures (given by \code{per.index})
+#' performance measures (given by \code{per.index})
 #' 
 #' @author Yoni Gavish <gavishyoni@@gmail.com>
 #' 
@@ -147,7 +147,7 @@
 #' \code{\link{HieFMeasure}} for additional information on the hierarchical
 #' performance measures.
 #' 
-#' @importFrom caret confusionMatrix  
+#' @import caret 
 #' @importFrom reshape melt
 #' @export
 #' 

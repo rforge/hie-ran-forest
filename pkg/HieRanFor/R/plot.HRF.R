@@ -1,7 +1,7 @@
 #' Plot the Hierarchical class structure
 #' 
 #' This function takes as input an object of class \code{"HRF"}, and plots the
-#' structure of the class hierarhcy
+#' structure of the class hierarchy.
 #' 
 #' @param x                      Object of class \code{"HRF"} - the output
 #'   of \code{RunHRF}.
@@ -141,7 +141,8 @@
 #' @seealso \code{\link{RunHRF}} for running a hierarchical randomForest,
 #'   \code{\link{PerformanceHRF}} for assessing the performance and accuracy of
 #'   the HRF.
-#' @aliases plot
+#'   
+#'   
 #' @method plot HRF
 #' @export 
 #' @import ggplot2

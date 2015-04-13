@@ -1,6 +1,10 @@
 Latest news on the package:     HieRanFo
 
-
+------------------------------------------------------
+27.  ==> 13 Apr. 2015
+1.  @aliases removed for plot.HRF, predict.HRF, RunHRF and TuneRF2 to avoid duplicates in help pages
+2.  All @ImportFrom to the caret function confusionmatrix where changed to @Import caret:
+    PerformanceHRF, PerformanceFlatRF, PerformanceNewHRF
 
 
 ------------------------------------------------------

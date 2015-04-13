@@ -2,7 +2,6 @@
 % Please edit documentation in R/ImportanceHie.R
 \name{ImportanceHie}
 \alias{ImportanceHie}
-\alias{importance}
 \title{The importance value of each explanatory variable in each local classifier}
 \usage{
 ImportanceHie(hie.RF, format.out = c("col.4.out"), scale.imp = FALSE, ...)

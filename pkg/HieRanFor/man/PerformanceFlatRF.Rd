@@ -96,7 +96,7 @@ a regular flat classification on all terminal nodes. The function then
 applies two different methods for selecting a single terminal node (given by
 \code{crisp.rule} and described in \code{\link{PerformanceHRF}}). Finally,
 the performance is explored in relation to the observed class using various
-perfromance measures (given by \code{per.index})
+performance measures (given by \code{per.index})
 }
 \details{
 When running a flat classification, a single randomForest algorithm

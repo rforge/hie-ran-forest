@@ -69,9 +69,8 @@
 #'                     mtry              = "tuneRF2",
 #'                     internal.end.path = TRUE)
 #' 
-#' @aliases tuneRF
 #' @export
-#' 
+
 
 # function, tuneRF of randomForest, after correcting for error relating to errorOld=0
 

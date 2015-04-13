@@ -55,7 +55,6 @@
 #'  @seealso \code{\link{PlotImportanceHie}} for a \code{ggplo2} based plotting
 #'    of hierarchical importance values.
 #'    
-#'  @aliases importance
 #'  @examples
 #' data(OliveOilHie)
 #' hie.RF.OO <- RunHRF(train.data       = OliveOilHie,

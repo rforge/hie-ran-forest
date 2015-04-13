@@ -2,7 +2,6 @@
 % Please edit documentation in R/RunHRF.R
 \name{RunHRF}
 \alias{RunHRF}
-\alias{randomForest}
 \title{Run the Hierarchical randomForest on the training data.}
 \usage{
 RunHRF(train.data, case.ID, hie.levels, internal.end.path = FALSE,

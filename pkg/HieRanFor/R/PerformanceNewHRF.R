@@ -134,7 +134,7 @@
 #' \code{\link{HieFMeasure}} for additional information on the hierarchical
 #' performance measures.
 #' 
-#' @importFrom caret confusionMatrix  
+#' @import caret 
 #' @importFrom reshape melt
 #' @export
 #'     
