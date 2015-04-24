@@ -126,7 +126,7 @@ flat.RF.OO <- PerformanceFlatRF(hie.RF     = hie.RF.OO,
                                                "hie.F.measure"),
                                 crisp.rule = c("multiplicative.majority",
                                                "multiplicative.permutation"),
-                                perm.num   = 10,         #
+                                perm.num   = 10,
                                 div.print  = 2)
 # extract values
 names(flat.RF.OO)

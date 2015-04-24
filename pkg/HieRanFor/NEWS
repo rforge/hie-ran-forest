@@ -1,11 +1,16 @@
 Latest news on the package:     HieRanFo
 
+
+------------------------------------------------------
+28.  ==> 24 Apr. 2015
+1. ExampleHRF.R added and packed as  a function. Contains all the examples from all other functions
+2. @Import caret  changed back to @importFrom caret confusionMatrix     in:
+   PerformanceHRF, PerformanceFlatRF, PerformanceNewHRF
 ------------------------------------------------------
 27.  ==> 13 Apr. 2015
 1.  @aliases removed for plot.HRF, predict.HRF, RunHRF and TuneRF2 to avoid duplicates in help pages
-2.  All @ImportFrom to the caret function confusionmatrix where changed to @Import caret:
+2.  All @ImportFrom to the caret function confusionMatrix where changed to @Import caret:
     PerformanceHRF, PerformanceFlatRF, PerformanceNewHRF
-
 
 ------------------------------------------------------
 26.  ==> 25 Feb. 2015

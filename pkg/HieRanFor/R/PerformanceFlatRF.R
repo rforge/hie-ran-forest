@@ -112,7 +112,7 @@
 #'                                                "hie.F.measure"),                         
 #'                                 crisp.rule = c("multiplicative.majority", 
 #'                                                "multiplicative.permutation"),   
-#'                                 perm.num   = 10,         #
+#'                                 perm.num   = 10,         
 #'                                 div.print  = 2)
 #' # extract values
 #' names(flat.RF.OO)
@@ -147,7 +147,7 @@
 #' \code{\link{HieFMeasure}} for additional information on the hierarchical
 #' performance measures.
 #' 
-#' @import caret 
+#' @importFrom caret confusionMatrix
 #' @importFrom reshape melt
 #' @export
 #' 

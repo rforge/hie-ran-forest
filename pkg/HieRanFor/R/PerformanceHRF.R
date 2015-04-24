@@ -218,7 +218,7 @@
 #'                   high.col   = "red",
 #'                   geom.tile.bor.col = "gray20")
 #'                   
-#' @import caret 
+#' @importFrom caret confusionMatrix
 #' @importFrom reshape melt
 #' @seealso
 #' \code{\link{RunHRF}} for running a hierarchical randomForest analysis, 
